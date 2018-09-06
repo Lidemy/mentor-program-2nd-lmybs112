@@ -7,8 +7,6 @@ function printFactor(n) {
     //可以被 n 整除
     if (n % i == 0) {
       console.log(i);
-    }
-  }
+    };
+  };
 }
-printFactor(10)
-printFactor(7)

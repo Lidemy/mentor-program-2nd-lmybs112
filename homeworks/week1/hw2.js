@@ -5,19 +5,13 @@
 //   var change=str.substring(0,1).toUpperCase()+str.substring(1);
 //   return change;
 // }
-// console.log(capitalize('chen'));
-// console.log(capitalize('Chen'));
-// console.log(capitalize(',chen'));
 
 function capitalize(str) {
-  var change='';
-  if(str[0]>='a' && str[0]<='z'){
-    change=str.substring(0,1).toUpperCase()+str.substring(1);
+  var change = '';
+  if (str[0] >= 'a' && str[0] <= 'z') {
+    change = str[0].toUpperCase() + str.substring(1);
     return change;
-  }else{
+  } else {
     return str;
-  }
+  };
 }
-console.log(capitalize('chen'));
-console.log(capitalize('Chen'));
-console.log(capitalize(',chen'));
