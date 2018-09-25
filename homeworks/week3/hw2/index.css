@@ -1,0 +1,72 @@
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* outline: red 1px solid; */
+  }
+
+  body {
+    font-family: "PingFang TC";
+    font-size: 16px;
+  }
+
+  /* medium 整體容器 ----------------------------------- */
+
+  .medium {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    max-width: 720px;
+    height: 100%;
+    padding: 20px 0;
+  }
+
+  /* medium 標題 ------------------------- */
+
+  .medium .medium__title {
+    font-size: 42px;
+    font-weight: normal;
+    padding-bottom: 15px;
+  }
+
+  /* medium 內容 ------------------------- */
+
+  .medium .medium__text {
+    padding: 15px 0;
+    font-size: 1.3125em;
+  }
+
+  /* medium 側欄 ------------------------- */
+
+  .medium .medium__side {
+    position: fixed;
+    left: 50px;
+    top: 190px;
+  }
+
+  /* RWD --------------------------------------- */
+
+  @media screen and (max-width: 747px) {
+    .medium {
+      margin: 0px 20px;
+    }
+
+    .medium .medium__title {
+      font-size: 30px;
+    }
+
+    .medium .medium__text {
+      padding: 15px 0;
+      font-size: 17px;
+    }
+  }
+
+  @media screen and (max-width: 900px) {
+    .medium {
+      padding: 20px 0px;
+    }
+
+    .medium .medium__side {
+      display: none;
+    }
+  }
