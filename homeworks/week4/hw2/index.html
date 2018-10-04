@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="normalize.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+  <link rel="stylesheet" href="./index.css">
+  <title>hw2-仿google表單</title>
+</head>
+
+<body>
+  <!-- google表單 -->
+  <div class="container">
+
+    <!-- google表單  header-->
+    <header class="container__header--img"></header>
+
+    <!-- google表單 form -->
+    <form action="" class="container__form" name="form" onsubmit="alert('Submitted!')">
+
+      <!-- google表單 form 頭部標題-->
+      <header class="container__form__header">
+        <h1 class="container__form__header__title">程式導師實驗計畫第二期報名表單</h1>
+        <p class="container__form__header__description">
+          詳情請參考：<a href="https://medium.com/hulis-blog/mentor-program-s2-f876c4e13d3b">https://medium.com/hulis-blog/mentor-program-s2-f876c4e13d3b</a><br />
+          填完之後請務必按照文章內的說明再寄信給我，才算報名成功喔<br />
+          <span class="container__form__header__span">*必填</span>
+        </p>
+      </header>
+
+      <!-- google表單 form Q&A 內容-->
+      <section class="container__form__content">
+
+        <!-- 表單問題 電子郵件 -->
+        <div class="container__form__content__qa">
+          <h3 class="container__form__content__question">電子郵件地址</h3>
+          <input class="container__form__content__answer" type="email" name="email" id="email" placeholder="你的電子郵件"
+            required>
+          <div class="tip--txt">這是必填問題</div>
+        </div>
+
+        <!-- 表單問題 暱稱 -->
+        <div class="container__form__content__qa">
+          <h3 class="container__form__content__question">暱稱</h3>
+          <p class="container__form__content__description">該如何稱呼你</p>
+          <input class="container__form__content__answer" type="text" name="text" id="text" placeholder="您的回答" required>
+          <div class="tip--txt">這是必填問題</div>
+        </div>
+
+        <!-- 表單問題 報名類型 -->
+        <div class="container__form__content__qa">
+          <h3 class="container__form__content__question">報名類型</h3>
+          <div class="container__form__content__answer long--line answer--radio">
+            <input type="radio" name="type" id="basic" value="basic" required>
+            <label for="basic">從零到一基礎班（一個月後開始收保證金 3000，淘汰不退還，結業後兩個月內找到工作付一個月半薪水，沒工作不用付）</label>
+            <br />
+            <br />
+            <input type="radio" name="type" id="strengthen" value="strengthen">
+            <label for="strengthen">在職工程師加強班（一個月後開始收保證金 3000，兩個月時收學費 30000，被淘汰不退還）</label>
+          </div>
+          <div class="tip--txt">這是必填問題</div>
+        </div>
+
+        <!-- 表單問題 現在的職業 -->
+        <div class="container__form__content__qa">
+          <h3 class="container__form__content__question">現在的職業</h3>
+          <p class="container__form__content__description">範例：學生、前端工程師、待業中、業務</p>
+          <input class="container__form__content__answer" type="text" name="text" id="text" placeholder="您的回答" required>
+          <div class="tip--txt">這是必填問題</div>
+        </div>
+
+
+        <!-- 表單問題 是否有程式相關背景？ -->
+        <div class="container__form__content__qa">
+          <h3 class="container__form__content__question">是否有程式相關背景？</h3>
+          <p class="container__form__content__description">範例：無、高中時候學過C++、學過一點網頁前端、目前在資策會上課...</p>
+          <input class="container__form__content__answer long--line" type="text" name="text" id="text" placeholder="您的回答"
+            required>
+          <div class="tip--txt">這是必填問題</div>
+        </div>
+
+        <!-- 表單問題 其他 -->
+        <div class="container__form__content">
+          <h3 class="container__form__content__question--other">其他</h3>
+          <p class="container__form__content__description">任何你想說的</p>
+          <input class="container__form__content__answer long--line" type="text" name="text" id="text" placeholder="您的回答">
+        </div>
+      </section>
+
+      <!-- google表單 form 提交 -->
+      <button class="container__form__content__submit" type="submit" value="Submit">提交</button>
+
+      <!-- google表單 form 補充說明 -->
+      <p class="container__form__description">請勿利用 Google 表單送出密碼。</p>
+    </form>
+
+    <!-- google表單  footer-->
+    <footer class="container__footer">
+      <p class="container__footer__description">Google 並未認可或建立這項內容。 <a href="javascript:;">檢舉濫用情形</a> - <a href="https://policies.google.com/terms?gl=US&hl=zh-TW">服務條款</a>
+        - <a href="https://policies.google.com/?hl=zh-TW">其他條款</a></p>
+      <p class="container__footer__description--google"><a href="https://www.google.com/forms/about/?utm_source=product&utm_medium=forms_logo&utm_campaign=forms">Google
+          表單</p>
+    </footer>
+
+  </div>
+</body>
+<script src="./index.js"></script>
+
+</html>
