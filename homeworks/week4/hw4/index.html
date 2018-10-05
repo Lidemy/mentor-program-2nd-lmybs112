@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<style>
+  .title {
+    font-size: 2.5rem;
+    background-color: royalblue;
+    color: white;
+    width: 12.5rem;
+    height: 6.25rem;
+    line-height: 6.25rem;
+    text-align: center;
+    border-radius: .3125rem;
+  }
+
+  button {
+    width: 6.25rem;
+    height: 3.125rem;
+    font-size: 30px;
+    margin: 1.875rem;
+    color:royalblue;
+    border: 2px solid royalblue;
+    border-radius: .625rem;
+    transition: all .5s;
+  }
+
+  button:hover {
+    background-color: royalblue;
+    color: white;
+    border: none;
+    box-shadow: .0625rem .0625rem .0625rem .0625rem black;
+  }
+</style>
+
+<body>
+  <div>
+    <button class="btn">hide</button>
+  </div>
+  <div class="title">Title</div>
+</body>
+<script>
+  let q = (e) => document.querySelector(e)
+
+  Object.prototype.show = function () {
+    this.hidden = false
+  }
+
+  Object.prototype.hide = function () {
+    this.hidden = true
+  }
+  let element = q('.title')
+  let showBtn = q('.show')
+  let btn = q('.btn')
+  btn.addEventListener('click', () => {
+    if (element.innerText) {
+      element.hide()
+      btn.innerText='show'
+      element.innerText = ''
+    } else {
+      element.innerText='Title'
+      element.show()
+      btn.innerText='hide'
+    }
+  })
+</script>
+
+</html>
