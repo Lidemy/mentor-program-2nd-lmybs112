@@ -63,7 +63,9 @@ body {
   -webkit-order: 1;
   order: 1;
 }
-
+.twitch__content__cards{
+  margin: 1.25rem 0;
+}
 .twitch__content__card {
   max-width: 18.75rem;
   display: -webkit-box;
@@ -73,7 +75,6 @@ body {
   -webkit-box-direction: normal;
   -ms-flex-direction: column;
   flex-direction: column;
-  margin: 1.25rem 0;
   -webkit-transition: all .3s;
   transition: all .3s;
 }
