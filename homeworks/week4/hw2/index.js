@@ -1,12 +1,12 @@
 (() => {
-  let submit = document.querySelector('.container__form__content__submit')
-  let txt = document.querySelectorAll('.tip--txt')
-  let bg = document.querySelectorAll('.container__form__content__qa')
-  let answer = document.querySelectorAll('.container__form__content__answer')
-  let type = document.getElementsByName('type')
-  let label = document.querySelectorAll('label')
-  let checked = ''
   document.addEventListener('DOMContentLoaded', () => {
+    let submit = document.querySelector('.container__form__content__submit')
+    let txt = document.querySelectorAll('.tip--txt')
+    let bg = document.querySelectorAll('.container__form__content__qa')
+    let answer = document.querySelectorAll('.container__form__content__answer')
+    let type = document.getElementsByName('type')
+    let label = document.querySelectorAll('label')
+    let checked = ''
     submit.addEventListener('click', () => {
       for (let i = 0; i < answer.length - 1; i++) {
         if (!(answer[i].value)) {
