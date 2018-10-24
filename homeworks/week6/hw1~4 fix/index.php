@@ -1,17 +1,17 @@
 <?php
-// 初始化session
-session_start();
-
-// 判斷是否登入
-$is_login = false;
-$user_id = '';
-if (isset($_SESSION["user_id"]) && !empty($_SESSION["user_id"])) {
-    $is_login = true;
-    $user_id = $_SESSION["user_id"];
-}
-
 // 連接數據庫
 require_once 'conn.php';
+// 判斷是否登入
+$is_login = false;
+$account = '';
+if (isset($_COOKIE["check"]) && !empty($_COOKIE["check"])) {
+    $is_login = true;
+    $certificate = $_COOKIE['check'];
+    $check = $conn->prepare("SELECT account FROM lmybs112_users_certificate WHERE certificate = ?");
+    $check->bind_param('s', $certificate);
+    $check->execute();
+    $account = $check->get_result()->fetch_assoc()['account'];
+}
 
 // 分頁
 $page = empty($_GET['page']) ? 1 : (int) $_GET['page'];
@@ -19,7 +19,7 @@ $page_size = 10;
 $offset = ($page - 1) * $page_size;
 
 // 查詢數據 分頁
-$stmt = $conn->prepare("SELECT lmybs112_comments.id,lmybs112_comments.message,lmybs112_comments.create_at,lmybs112_users.nickname FROM lmybs112_comments left join lmybs112_users on lmybs112_comments.user_id=lmybs112_users.id WHERE parent_id=? order by create_at DESC LIMIT ?,?");
+$stmt = $conn->prepare("SELECT lmybs112_comments.id,lmybs112_comments.message,lmybs112_comments.create_at,lmybs112_users.nickname FROM lmybs112_comments left join lmybs112_users on lmybs112_comments.user_id=lmybs112_users.account WHERE parent_id=? order by create_at DESC LIMIT ?,?");
 $parent_id = 0;
 $stmt->bind_param('iii', $parent_id, $offset, $page_size);
 $stmt->execute();
@@ -29,7 +29,7 @@ if (!$query) {
 }
 
 // 查詢數據 留言總數
-$count = $conn->prepare("SELECT lmybs112_comments.id,lmybs112_comments.message,lmybs112_comments.create_at,lmybs112_users.nickname FROM lmybs112_comments left join lmybs112_users on lmybs112_comments.user_id=lmybs112_users.id WHERE parent_id=? order by create_at DESC");
+$count = $conn->prepare("SELECT lmybs112_comments.id,lmybs112_comments.message,lmybs112_comments.create_at,lmybs112_users.nickname FROM lmybs112_comments left join lmybs112_users on lmybs112_comments.user_id=lmybs112_users.account WHERE parent_id=? order by create_at DESC");
 $count->bind_param('i', $parent_id);
 $count->execute();
 $count_pages = $count->get_result();
@@ -54,7 +54,7 @@ if (!empty($_GET['id'])) {
 } else {
 // 查詢可刪除數據
     $del = $conn->prepare("SELECT * FROM lmybs112_comments WHERE user_id =?");
-    $del->bind_param('i', $user_id);
+    $del->bind_param('i', $account);
     $del->execute();
     $de_result = $del->get_result();
     if (!$de_result) {
@@ -375,7 +375,7 @@ if (!empty($_GET['id'])) {
             <!-- 判斷是否顯示編輯＆刪除功能 -->
             <?php if ($is_login): ?>
               <?foreach ($de_result as $com): ?>
-                <?php if ($com['id'] == $item['id']): ?>
+                <?php if ($com['id'] == $item['id'] && $com['user_id']==$account): ?>
                 <div class="modify">
                   <a href="index.php?id=<?php echo $item['id'] ?>"><i class="fas fa-pencil-alt"></i></a>
                   <a href="delete.php?id=<?php echo $item['id'] ?>"><i class="fas fa-trash-alt"></i></a>
@@ -386,7 +386,8 @@ if (!empty($_GET['id'])) {
           </div>
 
 <?// 查詢子留言數據
-$child = $conn->prepare("SELECT lmybs112_comments.id,lmybs112_comments.message,lmybs112_comments.create_at,lmybs112_users.nickname FROM lmybs112_comments left join lmybs112_users on lmybs112_comments.user_id=lmybs112_users.id WHERE parent_id=? order by create_at ASC;");
+$child = $conn->prepare("SELECT lmybs112_comments.id,lmybs112_comments.message,lmybs112_comments.create_at,lmybs112_users.nickname FROM lmybs112_comments left join lmybs112_users on lmybs112_comments.user_id=lmybs112_users.account WHERE parent_id=? order by create_at ASC;");
+
 $parent_id = $item['id'];
 $child->bind_param('i', $parent_id);
 $child->execute();
@@ -412,15 +413,15 @@ if (!$query_child) {
                   <!-- 刪除＆編輯功能 -->
                   <?php if ($is_login): ?>
                     <?foreach ($de_result as $com): ?>
-                      <?php if ($com['id'] == $item_child['id']): ?>
+                    <?php if ($com['id'] == $item_child['id'] && $com['user_id']==$account): ?>
                         <span class="modify">
-                        <a href="index.php?id=<?php echo $item_child['id'] ?>"><i class="fas fa-pencil-alt"></i></a>
-                        <a href="delete.php?id=<?php echo $item_child['id'] ?>"><i class="fas fa-trash-alt"></i></a>
-                      </span>
-                      <?php if ($item['nickname'] == $item_child['nickname']): ?>
-                        <div class="show_self"></div>
+                          <a href="index.php?id=<?php echo $com['id'] ?>"><i class="fas fa-pencil-alt"></i></a>
+                          <a href="delete.php?id=<?php echo $com['id'] ?>"><i class="fas fa-trash-alt"></i></a>
+                        </span>
+                        <?php if ($item['nickname'] == $item_child['nickname']): ?>
+                          <div class="show_self"></div>
+                        <?php endif?>
                       <?php endif?>
-                    <?php endif?>
                     <?php endforeach?>
                   <?php endif?>
 
@@ -463,7 +464,7 @@ if (!$query_child) {
     <tr class="page">
       <td><a href="index.php?page=<?php echo $page > 1 ? $page - 1 : 1 ?>">上一頁</a></td>
       <?php for ($i = $begin; $i <= $end; $i++): ?>
-      <td <?php echo $i===$page?'class="active"':'';?>><a href="index.php?page=<?php echo $i ?>"><?echo $i ?></a></td>
+      <td <?php echo $i === $page ? 'class="active"' : ''; ?>><a href="index.php?page=<?php echo $i ?>"><?echo $i ?></a></td>
       <?php endfor?>
       <td><a href="index.php?page=<?php echo $page < $end ? $page + 1 : $end ?>">下一頁</a></td>
     </tr>

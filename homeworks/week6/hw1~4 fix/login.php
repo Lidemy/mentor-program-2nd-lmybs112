@@ -1,62 +1,62 @@
 <?php
-
-// 初始化session
-session_start();
-
-// 登入會員
-function login_user()
-{
+$acc = '';
+$pas = '';
+$err_mes = 0;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 驗證非空
     if (empty($_POST['account'])) {
-        $GLOBALS['error_message'] = '請輸入帳號';
-        return;
+        $acc = '請輸入帳號!';
+        $err_mes++;
     }
     if (empty($_POST['password'])) {
-        $GLOBALS['error_message'] = '請輸入密碼';
-        return;
+        $pas = '請輸入密碼!';
+        $err_mes++;
     }
 
     // 取值
-    $account = $_POST['account'];
-    $password = $_POST['password'];
-    $is_login = false;
+    if (!empty($_POST['account']) && !empty($_POST['password'])) {
+        $account = $_POST['account'];
+        $password = $_POST['password'];
+        $is_login = false;
 
-    // 密碼加密
-    $hash = password_hash($password, PASSWORD_DEFAULT, ['cost' => 11]);
+        // 連接數據庫
+        require_once 'conn.php';
 
-    // 連接數據庫
-    require_once 'conn.php';
-
-    // 查詢數據
-    $login = $conn->prepare("SELECT * FROM lmybs112_users WHERE account=?");
-    $login->bind_param("s", $account);
-    $login->execute();
-    $result = $login->get_result();
-    if (!$result) {
-        $GLOBALS['error_message'] = "查詢數據失敗";
-        return;
-    }
-
-    $num_of_rows = $result->num_rows;
-    if ($num_of_rows > 0) {
-        $item = $result->fetch_assoc();
-        if (password_verify($_POST['password'], $hash)) {
-            $_SESSION['user_id'] = $item['id'];
+        // 查詢數據
+        $login = $conn->prepare("SELECT * FROM lmybs112_users WHERE account=?");
+        $login->bind_param("s", $account);
+        $login->execute();
+        $result = $login->get_result();
+        if (!$result) {
+            exit('查詢數據失敗');
+        }
+        $row = $result->fetch_assoc();
+        if ($row > 0 && password_verify($password, $row['password'])) {
             // 儲存登入狀態
             $is_login = true;
+            $check_certificate = $conn->prepare("SELECT * FROM lmybs112_users_certificate WHERE account = ?");
+            $check_certificate->bind_param("s", $account);
+            $check_certificate->execute();
+            $res_certificate = $check_certificate->get_result();
+            //每次重新登入更新 certificate
+            if ($res_certificate->num_rows > 0) {
+                $certificate = uniqid();
+                $set_certificate = $conn->prepare("UPDATE lmybs112_users_certificate SET certificate = ? WHERE account = ?");
+                $set_certificate->bind_param('ss', $certificate, $account);
+                $set_certificate->execute();
+                setcookie('check', $certificate, time() + 1 * 24 * 60 * 60);
+            }
             setcookie('login', $is_login, time() + 1 * 24 * 60 * 60);
+            // 響應頁面
+            header('location: index.php');
+        } else {
+            if ($err_mes === 0) {
+                echo "<script> alert('登入失敗，請重新登入或註冊會員!'); location.href = 'login.php'</script>";
+                exit();
+            }
         }
-        // 響應頁面
-        header('location: index.php');
-    } else {
-        $GLOBALS['error_message'] = "帳號或密碼錯誤";
-        return;
     }
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    login_user();
-}
+  }
 ?>
 
 
@@ -172,10 +172,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <main class="member">
     <form action="" method="post" id="login-form">
       <h2 class="form-title">登入會員</h2>
-
-      <?php if (isset($error_message)): ?>
+      <?php if ($err_mes && $err_mes > 1): ?>
         <div class="alert">
-        <?php echo $error_message; ?>
+        <?php echo "請輸入帳密"; ?>
+        </div>
+      <?php elseif ($err_mes && $acc): ?>
+        <div class="alert">
+        <?php echo $acc; ?>
+        </div>
+      <?php elseif ($err_mes && $pas): ?>
+        <div class="alert">
+        <?php echo $pas; ?>
         </div>
         <?php endif?>
 

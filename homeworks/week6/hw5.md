@@ -17,12 +17,13 @@
 
  2. 使用 HttpOnly Cookie
 
-    - 將重要的 cookie 標記為 httponly，這樣的話當瀏覽器向 Web 服務器發起請求的時就會帶上 cookie 字段，但是在 js 腳本中卻不能訪問這個 cookie，這樣就避免了 XSS 攻擊利用 JavaScript 的 document.cookie 獲取 cookie。
+    - 將重要的 cookie 標記為 httponly，這樣的話當瀏覽器向 Web 服務器發起請求的時就會帶上 cookie 字段，但是在 js 腳本中卻不能訪問這個 cookie，這樣就避免了 XSS 攻擊利用 JavaScript 的 document.cookie 獲取 cookie。(若單獨使用無法全面抵禦跨站點腳本攻擊，所以通常需要將 HTTP-only Cookie 和其他技術組合使用。)
 
 - [參考連結 - XSS](https://hk.saowen.com/a/5494c2b9b8098a6e95556655d9bb0d6a262ad8bbdaa5be72befad43b6501d5f9)
 
 - [參考連結 - 對於跨站腳本攻擊（XSS攻擊）的理解和總結](https://www.imooc.com/article/13553)
 
+- [參考連結 - COOKIE之安全设置漫谈](https://www.cnblogs.com/milantgh/p/3767105.html)
 ## 請說明 CSRF 的攻擊原理以及防範方法
 
 - 攻擊原理：利用網站對於用戶網頁瀏覽器的信任，挾持用戶當前已登陸的 Web 應用程序，去執行並非用戶本意的操作。
