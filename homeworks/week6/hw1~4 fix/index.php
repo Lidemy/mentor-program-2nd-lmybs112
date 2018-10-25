@@ -1,6 +1,8 @@
 <?php
+
 // 連接數據庫
 require_once 'conn.php';
+
 // 判斷是否登入
 $is_login = false;
 $account = '';
@@ -61,7 +63,6 @@ if (!empty($_GET['id'])) {
         exit("查詢數據失敗");
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -293,7 +294,6 @@ if (!empty($_GET['id'])) {
 <body>
 <!-- 留言板 -->
   <div class="container" id="top">
-
   <!-- 留言板-導覽列 -->
     <nav class="nav">
       <a href="index.php"><h1><i class="far fa-comments"></i>簡易留言板</h1></a>
@@ -312,7 +312,6 @@ if (!empty($_GET['id'])) {
 
   <!-- 判斷要新增留言 or 修改留言 -->
   <?php if (isset($edit_res)): ?>
-
     <!-- 留言板-留言內容-我要修改 -->
     <div class="board">
       <h3 class="title">我要修改<i class="fas fa-user-edit"></i></h3>
@@ -375,7 +374,7 @@ if (!empty($_GET['id'])) {
             <!-- 判斷是否顯示編輯＆刪除功能 -->
             <?php if ($is_login): ?>
               <?foreach ($de_result as $com): ?>
-                <?php if ($com['id'] == $item['id'] && $com['user_id']==$account): ?>
+                <?php if ($com['id'] == $item['id'] && $com['user_id'] == $account): ?>
                 <div class="modify">
                   <a href="index.php?id=<?php echo $item['id'] ?>"><i class="fas fa-pencil-alt"></i></a>
                   <a href="delete.php?id=<?php echo $item['id'] ?>"><i class="fas fa-trash-alt"></i></a>
@@ -413,7 +412,7 @@ if (!$query_child) {
                   <!-- 刪除＆編輯功能 -->
                   <?php if ($is_login): ?>
                     <?foreach ($de_result as $com): ?>
-                    <?php if ($com['id'] == $item_child['id'] && $com['user_id']==$account): ?>
+                    <?php if ($com['id'] == $item_child['id'] && $com['user_id'] == $account): ?>
                         <span class="modify">
                           <a href="index.php?id=<?php echo $com['id'] ?>"><i class="fas fa-pencil-alt"></i></a>
                           <a href="delete.php?id=<?php echo $com['id'] ?>"><i class="fas fa-trash-alt"></i></a>

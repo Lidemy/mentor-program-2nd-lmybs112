@@ -1,23 +1,29 @@
 <?php
-$err_mes = 0;
-$name = '';
-$acc = '';
-$pas = '';
+$err_msg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // 驗證非空
-    if (empty($_POST['nickname'])) {
-        $err_mes++;
-        $name = '暱稱';
+    if (empty($_POST['nickname']) && empty($_POST['account']) && empty($_POST['password'])) {
+        $err_msg = '請輸入以下資料';
+    } elseif (empty($_POST['nickname']) && empty($_POST['account'])) {
+        $err_msg = '請輸入暱稱及帳號';
+    } elseif (empty($_POST['nickname']) && empty($_POST['password'])) {
+        $err_msg = '請輸入暱稱及密碼';
+    } elseif (empty($_POST['account']) && empty($_POST['password'])) {
+        $err_msg = '請輸入帳號及密碼';
+    } else {
+        $err_msg = '請輸入';
+        if (empty($_POST['nickname'])) {
+            $err_msg .= '暱稱';
+        }
+        if (empty($_POST['account'])) {
+            $err_msg .= '帳號';
+        }
+        if (empty($_POST['password'])) {
+            $err_msg .= '密碼';
+        }
     }
-    if (empty($_POST['account'])) {
-        $err_mes++;
-        $acc = '帳號';
-    }
-    if (empty($_POST['password'])) {
-        $err_mes++;
-        $pas = '密碼';
-    }
+
     if (!empty($_POST['nickname']) && !empty($_POST['account']) && !empty($_POST['password'])) {
         // 取值
         $nickname = $_POST['nickname'];
@@ -40,38 +46,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit('查詢數據失敗');
         }
         $row = $res_acc->fetch_assoc();
-        if ($row>1) {
-          echo "<script> alert('註冊失敗，此帳號已存在!'); location.href = 'join.php'</script>";
-          exit();
-      }
-
-        // 增加數據
-        $join = $conn->prepare("INSERT INTO lmybs112_users(id, nickname, account, password) VALUES (?,?,?,?)");
-        $id = null;
-        $join->bind_param('ssss', $id, $nickname, $account, $hash);
-        $join->execute();
-
-        if (!$join) {
-            exit('增加數據失敗');
+        if ($row > 1) {
+            $err_msg = '註冊失敗，此帳號已存在!';
         } else {
-            // 註冊成功後自動登入
-            $last_id = $conn->insert_id;
-            $_COOKIE["check"] = $last_id;
-            $is_login = true;
+            // 增加數據
+            $join = $conn->prepare("INSERT INTO lmybs112_users(id, nickname, account, password) VALUES (?,?,?,?)");
+            $id = null;
+            $join->bind_param('ssss', $id, $nickname, $account, $hash);
+            $join->execute();
 
-            // 增加身份驗證
-            $certificate = uniqid();
-            $add_certificate = $conn->prepare("INSERT INTO lmybs112_users_certificate(certificate,account) VALUES(?,?)");
-            $add_certificate->bind_param('ss', $certificate, $account);
-            $add_certificate->execute();
-            setcookie('check', $certificate, time() + 1 * 24 * 60 * 60);
-            setcookie('login', $is_login, time() + 1 * 24 * 60 * 60);
-            // 響應頁面
-            header('location: index.php');
+            if (!$join) {
+                exit('增加數據失敗');
+            } else {
+                // 註冊成功後自動登入
+                $last_id = $conn->insert_id;
+                $_COOKIE["check"] = $last_id;
+                $is_login = true;
+
+                // 增加身份驗證
+                $certificate = uniqid();
+                $add_certificate = $conn->prepare("INSERT INTO lmybs112_users_certificate(certificate,account) VALUES(?,?)");
+                $add_certificate->bind_param('ss', $certificate, $account);
+                $add_certificate->execute();
+                setcookie('check', $certificate, time() + 1 * 24 * 60 * 60);
+                setcookie('login', $is_login, time() + 1 * 24 * 60 * 60);
+                // 響應頁面
+                header('location: index.php');
+            }
         }
     }
 }
-
 ?>
 
 
@@ -189,21 +193,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" id="join-form" autocomplete="off">
         <h2 class="form-title">註冊成為會員</h2>
 
-        <?php if ($err_mes === 3): ?>
+        <!-- 提示錯誤訊息 -->
+        <?php if (!empty($err_msg)): ?>
         <div class="alert">
-        <?php echo "請輸入以下資料"; ?>
-        </div>
-        <?php elseif ($err_mes > 0 && $err_mes===2): ?>
-        <div class="alert">
-        <?php if ($name): ?>
-        <?php echo "請輸入". $name . "及" . $acc,$pas; ?>
-        <?php else:?>
-        <?php echo "請輸入". $acc . "及" . $pas; ?>
-        <?php endif?>
-        </div>
-        <?php elseif ($err_mes > 0 && $err_mes===1): ?>
-        <div class="alert">
-        <?php echo "請輸入".$name,$acc,$pas; ?>
+        <?php echo $err_msg; ?>
         </div>
         <?php endif?>
 

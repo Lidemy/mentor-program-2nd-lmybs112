@@ -1,19 +1,20 @@
 <?php
+// 驗證非空
 if (empty($_GET['id'])) {
     exit('<h1>找不到刪除對象</h1>');
 }
 
 // 連接數據庫
-include_once 'conn.php';
+require_once 'conn.php';
+
+// 取值
+$id = $_GET['id'];
 
 // 刪除數據
-$id = $_GET['id'];
 $del = $conn->prepare("DELETE FROM lmybs112_comments WHERE id=?");
 $del->bind_param('i', $id);
 $del->execute();
-$del->bind_result();
-$row = array();
-if (!$del->fetch()) {
-    $row = array('error' => '刪除數據失敗');
+if (!$del) {
+    exit('<h1>刪除數據失敗</h1>');
 }
 header('Location:index.php');
