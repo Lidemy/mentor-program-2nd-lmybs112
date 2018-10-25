@@ -1,61 +1,77 @@
 <?php
+$err_mes = 0;
+$name = '';
+$acc = '';
+$pas = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-// 初始化session
-session_start();
-
-// 註冊會員
-function add_user()
-{
     // 驗證非空
     if (empty($_POST['nickname'])) {
-        $GLOBALS['error_message'] = '請輸入暱稱';
-        return;
+        $err_mes++;
+        $name = '暱稱';
     }
     if (empty($_POST['account'])) {
-        $GLOBALS['error_message'] = '請輸入帳號';
-        return;
+        $err_mes++;
+        $acc = '帳號';
     }
     if (empty($_POST['password'])) {
-        $GLOBALS['error_message'] = '請輸入密碼';
-        return;
+        $err_mes++;
+        $pas = '密碼';
     }
-    // 取值
-    $is_login = false;
-    $nickname = $_POST['nickname'];
-    $account = $_POST['account'];
-    $password = $_POST['password'];
+    if (!empty($_POST['nickname']) && !empty($_POST['account']) && !empty($_POST['password'])) {
+        // 取值
+        $nickname = $_POST['nickname'];
+        $account = $_POST['account'];
+        $password = $_POST['password'];
+        $is_login = false;
 
-    // 密碼加密
-    $hash = password_hash($password, PASSWORD_DEFAULT, ['cost' => 11]);
+        // 密碼加密
+        $hash = password_hash($password, PASSWORD_DEFAULT);
 
-    // 連接數據庫
-    require_once 'conn.php';
+        // 連接數據庫
+        require_once 'conn.php';
 
-    // 查詢數據
-    $join = $conn->prepare("INSERT INTO lmybs112_users(id, nickname, account, password) VALUES (?,?,?,?)");
-    $id=null;
-    $join->bind_param('ssss',$id,$nickname,$account,$hash);
-    $join->execute();
+        // 判斷是否註冊過
+        $check_acc = $conn->prepare("SELECT * FROM lmybs112_users WHERE account=?");
+        $check_acc->bind_param("s", $account);
+        $check_acc->execute();
+        $res_acc = $check_acc->get_result();
+        if (!$res_acc) {
+            exit('查詢數據失敗');
+        }
+        $row = $res_acc->fetch_assoc();
+        if ($row>1) {
+          echo "<script> alert('註冊失敗，此帳號已存在!'); location.href = 'join.php'</script>";
+          exit();
+      }
 
-    if (!$join) {
-        $GLOBALS['error_message'] = "查詢數據失敗";
-        return;
-    } else {
-        // 註冊成功後自動登入
-        $last_id = $conn->insert_id;
-        $_SESSION["user_id"]=$last_id;
-        // 儲存登入狀態
-        $is_login=true;
-        setcookie('login', $is_login, time() + 1 * 24 * 60 * 60);
+        // 增加數據
+        $join = $conn->prepare("INSERT INTO lmybs112_users(id, nickname, account, password) VALUES (?,?,?,?)");
+        $id = null;
+        $join->bind_param('ssss', $id, $nickname, $account, $hash);
+        $join->execute();
+
+        if (!$join) {
+            exit('增加數據失敗');
+        } else {
+            // 註冊成功後自動登入
+            $last_id = $conn->insert_id;
+            $_COOKIE["check"] = $last_id;
+            $is_login = true;
+
+            // 增加身份驗證
+            $certificate = uniqid();
+            $add_certificate = $conn->prepare("INSERT INTO lmybs112_users_certificate(certificate,account) VALUES(?,?)");
+            $add_certificate->bind_param('ss', $certificate, $account);
+            $add_certificate->execute();
+            setcookie('check', $certificate, time() + 1 * 24 * 60 * 60);
+            setcookie('login', $is_login, time() + 1 * 24 * 60 * 60);
+            // 響應頁面
+            header('location: index.php');
+        }
     }
-
-    // 響應頁面
-    header('location: index.php');
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    add_user();
-}
 ?>
 
 
@@ -173,9 +189,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" id="join-form" autocomplete="off">
         <h2 class="form-title">註冊成為會員</h2>
 
-        <?php if (isset($error_message)): ?>
+        <?php if ($err_mes === 3): ?>
         <div class="alert">
-        <?php echo $error_message; ?>
+        <?php echo "請輸入以下資料"; ?>
+        </div>
+        <?php elseif ($err_mes > 0 && $err_mes===2): ?>
+        <div class="alert">
+        <?php if ($name): ?>
+        <?php echo "請輸入". $name . "及" . $acc,$pas; ?>
+        <?php else:?>
+        <?php echo "請輸入". $acc . "及" . $pas; ?>
+        <?php endif?>
+        </div>
+        <?php elseif ($err_mes > 0 && $err_mes===1): ?>
+        <div class="alert">
+        <?php echo "請輸入".$name,$acc,$pas; ?>
         </div>
         <?php endif?>
 
