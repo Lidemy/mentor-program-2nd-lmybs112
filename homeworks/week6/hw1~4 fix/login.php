@@ -1,16 +1,17 @@
 <?php
-$acc = '';
-$pas = '';
-$err_mes = 0;
+$err_msg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 驗證非空
-    if (empty($_POST['account'])) {
-        $acc = '請輸入帳號!';
-        $err_mes++;
+    if (empty($_POST['account']) && empty($_POST['password'])) {
+      $err_msg = '請輸入帳號及密碼';
+    }else{
+      $err_msg = '請輸入';
+      if (empty($_POST['account'])) {
+        $err_msg .= '帳號';
     }
     if (empty($_POST['password'])) {
-        $pas = '請輸入密碼!';
-        $err_mes++;
+        $err_msg .= '密碼';
+    }
     }
 
     // 取值
@@ -50,13 +51,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // 響應頁面
             header('location: index.php');
         } else {
-            if ($err_mes === 0) {
-                echo "<script> alert('登入失敗，請重新登入或註冊會員!'); location.href = 'login.php'</script>";
-                exit();
-            }
+            $err_msg = '登入失敗，請重新登入或註冊會員!';
         }
     }
-  }
+}
 ?>
 
 
@@ -172,17 +170,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <main class="member">
     <form action="" method="post" id="login-form">
       <h2 class="form-title">登入會員</h2>
-      <?php if ($err_mes && $err_mes > 1): ?>
+
+      <!-- 提示錯誤訊息 -->
+      <?php if (!empty($err_msg)): ?>
         <div class="alert">
-        <?php echo "請輸入帳密"; ?>
-        </div>
-      <?php elseif ($err_mes && $acc): ?>
-        <div class="alert">
-        <?php echo $acc; ?>
-        </div>
-      <?php elseif ($err_mes && $pas): ?>
-        <div class="alert">
-        <?php echo $pas; ?>
+        <?php echo $err_msg; ?>
         </div>
         <?php endif?>
 
