@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- fontawesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz"
+    crossorigin="anonymous">
+  <!-- bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="index.css">
+  <title>TODO LIST</title>
+</head>
+
+<body>
+  <div class="todoList">
+
+    <!-- todo 容器 -->
+    <div class="todoList__container container align-items-center">
+
+      <!-- todo 標題 -->
+      <h1 class="todoList__title text-center display-3">TodoList</h1>
+
+      <!-- 提交 todo -->
+      <div class="todoList__top">
+        <form class="top__input form-inline row justify-content-center">
+          <div class="input-group col-12 col-md-8 col-lg-6">
+            <!-- 只能輸入中英數字限制長度：10 -->
+            <input type="text" class="add-text form-control" id="todo" maxLength="10" placeholder="todo" onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5]/g, '')"
+              required>
+            <button type="submit" class="top_btn btn btn-primary" id="submit"><i class="fas fa-plus"></i></button>
+          </div>
+        </form>
+      </div>
+
+      <!-- 顯示 todo -->
+      <div class="todoList__bottom">
+        <!-- nav -->
+        <div class="row justify-content-center">
+          <ul id="myTab" class="nav nav-tabs justify-content-right col-11 col-md-8 col-lg-6">
+            <li class="nav-item">
+              <a href="#task" class="nav-link active" data-toggle="tab">
+                My Tasks
+              </a>
+            </li>
+          </ul>
+        </div>
+        <!-- show -->
+        <div id="myTabContent" class="tab-content row justify-content-center">
+          <div class="tab-pane in active col-12 col-md-6 justify-content-center" id="task">
+            <p id="count"></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- todo 容器 -->
+  </div>
+
+
+  <!-- jquery -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <!-- bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+    crossorigin="anonymous"></script>
+  <!-- index.js -->
+  <script src="index.js"></script>
+</body>
+
+</html>
