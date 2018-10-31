@@ -6,7 +6,6 @@ require_once 'conn.php';
 // 判斷是否登入
 $is_login = false;
 $account = '';
-$nickname = '';
 if (isset($_COOKIE["check"]) && !empty($_COOKIE["check"])) {
     $is_login = true;
     $certificate = $_COOKIE['check'];
@@ -15,6 +14,12 @@ if (isset($_COOKIE["check"]) && !empty($_COOKIE["check"])) {
     $check->execute();
     $account = $check->get_result()->fetch_assoc()['account'];
 }
+
+// 使用者暱稱
+$user = $conn->prepare("SELECT nickname FROM lmybs112_users WHERE account = ?");
+$user->bind_param('s', $account);
+$user->execute();
+$nickname = $user->get_result()->fetch_assoc()['nickname'];
 
 // 分頁
 $page = empty($_GET['page']) ? 1 : (int) $_GET['page'];
@@ -39,8 +44,6 @@ $count_pages = $count->get_result();
 if (!$count_pages) {
     exit("查詢數據失敗");
 }
-$nickname = $count_pages->fetch_assoc()['nickname'];
-$id = $count_pages->fetch_assoc()['id'];
 
 // 計算頁碼
 $total = $count_pages->num_rows;
@@ -246,7 +249,6 @@ if (!empty($_GET['id'])) {
   }
   .modify{
     text-align:right;
-    padding:5px;
   }
   .modify>a{
     color:#ccc;
@@ -305,6 +307,16 @@ if (!empty($_GET['id'])) {
     color:white;
     padding:0 5px;
   }
+  #nickname{
+    padding:10px 20px;
+  }
+
+  .logout:hover{
+    border-bottom:2px solid red;
+  }
+  .delete__mes{
+    padding:5px;
+  }
 </style>
 
 <body>
@@ -321,8 +333,8 @@ if (!empty($_GET['id'])) {
         <a href="join.php" class="join"><button>註冊</button></a>
         <a href="login.php" class="login"><button>登入</button></a>
         <?php else: ?>
-        <h6 id="check_cer" class="hidden"><?php echo $certificate ?></h6>
-        <h4 class="showNickname">Hi~ <?php echo ($nickname) ?></h4>
+        <h6 id="check_cer" class="hidden"><?php echo $account ?></h6>
+        <h4 class="showNickname">Hi~ <?php echo $nickname ?></h4>
         <a href="logout.php" class="logout"><button>登出</button></a>
         <?php endif?>
       </div>
@@ -352,7 +364,12 @@ if (!empty($_GET['id'])) {
 
     <!-- 留言板-留言內容-我要留言 -->
     <div class="board">
-      <h3 class="title"id="nickname"><?php echo ($nickname) ?><i class="fas fa-bullhorn"></i></h3>
+    <!-- 判斷是否登入 -->
+      <?php if ($is_login): ?>
+      <h3 id="nickname"><?php echo $nickname ?><i class="fas fa-bullhorn"></i></h3>
+      <?php else: ?>
+      <h3 class="title">我要留言<i class="fas fa-bullhorn"></i></h3>
+      <?php endif?>
       <form action="add_message.php" class="content" id="main_mes" method="post">
         <div class="content_message">
           <textarea name="message" id="sendMessage" cols="100" rows="10" placeholder="請輸入留言內容"></textarea>
@@ -373,8 +390,8 @@ if (!empty($_GET['id'])) {
 
 
     <!-- 輸出下方留言 -->
+  <div class="showMessage">
     <?while ($item = $query->fetch_assoc()): ?>
-    <div class="showMessage">
     <div class="board board-res">
       <div class="content content-child">
         <div class="aside">
@@ -399,8 +416,7 @@ if (!empty($_GET['id'])) {
 
             <div class="modify">
               <a href="index.php?id=<?php echo $item['id'] ?>"><i class="fas fa-pencil-alt"></i></a>
-              <a href="delete.php?id=<?php echo $item['id'] ?>" class="delete__mes" data-id="<?php echo $item['id'] ?>"><i
-                  class="fas fa-trash-alt"></i></a>
+              <a href="delete.php?id=<?php echo $item['id'] ?>" data-id="<?php echo $item['id'] ?>" class="delete__mes">Delete</a>
             </div>
 
             <?php endif?>
@@ -439,8 +455,7 @@ if (!$query_child) {
                 <?php if ($com['id'] == $item_child['id'] && $com['user_id'] == $account): ?>
                 <span class="modify">
                   <a href="index.php?id=<?php echo $com['id'] ?>"><i class="fas fa-pencil-alt"></i></a>
-                  <a href="delete.php?id=<?php echo $com['id'] ?>" class="delete__mes delete__mes__response" data-id="<?php echo $com['id'] ?>"><i
-                      class="fas fa-trash-alt"></i></a>
+                  <a href="delete.php?id=<?php echo $com['id'] ?>"data-id="<?php echo $com['id'] ?>" class="delete__mes delete__mes__response">Delete</a>
                 </span>
                 <?php if ($item['nickname'] == $item_child['nickname']): ?>
                 <div class="show_self"></div>
@@ -478,8 +493,8 @@ if (!$query_child) {
         </div>
       </div>
     </div>
-  </div>
     <?endwhile?>
+  </div>
     <!-- 留言板-返回頂部 -->
     <div>
       <a href="#top"><i class="fas fa-arrow-alt-circle-up"></i></a>

@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $row = $res_certificate->fetch_assoc();
         $user_id = $row['account'];
+
         // 新增數據
         $add_mes = $conn->prepare("INSERT INTO `lmybs112_comments`(parent_id, user_id, message) VALUES (?,?,?)");
         $add_mes->bind_param("sss", $parent_id, $user_id, $message);
@@ -31,11 +32,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$add_mes) {
             exit('添加數據失敗');
         }
+        // 取得創建時間
+        $time = $conn->prepare("SELECT create_at FROM lmybs112_comments WHERE id = ?");
+        $time->bind_param('s',$last_id);
+        $time->execute();
+        $create_at = $time->get_result()->fetch_assoc()['create_at'];
+
     }
     if ($parent_id === '0') {
-        $arr = array('result' => 'success', 'id' => $last_id);
+        $arr = array('result' => 'success', 'id' => $last_id, 'create_at' => $create_at,'user_id'=>$user_id);
         echo json_encode($arr);
-    }else{
+    } else {
         header('Location:index.php');
     }
 }

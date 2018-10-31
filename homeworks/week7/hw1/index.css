@@ -6,8 +6,7 @@
 }
 
 .container {
-  max-width: 960px;
-  widows: 100%;
+  width: 960px;
   margin: auto;
   display: flex;
   flex-direction: column;

@@ -26,12 +26,12 @@
 
       <!-- 提交 todo -->
       <div class="todoList__top">
-        <form class="top__input form-inline row justify-content-center">
+        <form class="top__form form-inline row justify-content-center">
           <div class="input-group col-12 col-md-8 col-lg-6">
             <!-- 只能輸入中英數字限制長度：10 -->
-            <input type="text" class="add-text form-control" id="todo" maxLength="10" placeholder="todo" onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5]/g, '')"
+            <input type="text" class="text form-control" id="todo" maxLength="10" placeholder="todo" onkeyup="value=value.replace(/[^\w\u4E00-\u9FA5]/g, '')"
               required>
-            <button type="submit" class="top_btn btn btn-primary" id="submit"><i class="fas fa-plus"></i></button>
+            <button type="submit" class="top__form__btn btn btn-primary" id="submit"><i class="fas fa-plus"></i></button>
           </div>
         </form>
       </div>
@@ -54,14 +54,9 @@
             <p id="count"></p>
           </div>
         </div>
-
       </div>
     </div>
-
-  </div><!-- todo 容器 -->
   </div>
-
-
   <!-- jquery -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
     crossorigin="anonymous"></script>

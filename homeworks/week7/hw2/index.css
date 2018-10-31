@@ -36,26 +36,13 @@ body {
   font-size: 1.5rem;
 }
 
-.nav-item {
-  font-size: 1rem;
-}
-
-.nav-item :hover {
-  color: white;
-}
-
 .nav-link {
-  color: white;
   font-size: 1.2rem;
 }
 
 .show-task {
   margin: .9375rem 0;
   background-color: rgba(58, 68, 77, 0.3);
-}
-
-#task {
-  margin: 0 auto;
 }
 
 .text {

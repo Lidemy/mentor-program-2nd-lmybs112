@@ -17,4 +17,5 @@ $del->execute();
 if (!$del) {
     exit('<h1>刪除數據失敗</h1>');
 }
+
 header('Location:index.php');
