@@ -1,0 +1,72 @@
+@import url(https://fonts.googleapis.com/earlyaccess/notosanstc.css);
+
+$bgColor:rgb(58, 68, 77);
+
+body {
+  font-family: ‘Noto Sans TC’, sans-serif;
+  font-size: 1rem;
+  color: white;
+  min-height: 100vh;
+  background-image: url("../todo-bg.jpg");
+  background-attachment: fixed;
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  outline: 1px solid red;
+}
+
+.todoList {
+  background-color: rgba($bgColor, .5);
+  top: 0;
+  min-width: 100vw;
+  min-height: 100vh;
+
+  &__container {
+    padding-top: 6.25rem;
+  }
+
+  &__title {
+    font-weight: 700;
+  }
+
+  &__top {
+    margin-bottom: 1.25rem;
+  }
+}
+
+#todo {
+  font-size: 1.5rem;
+}
+
+
+.nav {
+  &-item {
+    font-size: 1rem;
+
+    :hover {
+      color: white;
+    }
+  }
+
+  &-link {
+    color: white;
+    font-size: 1.2rem;
+  }
+}
+
+.show-task {
+  margin: .9375rem 0;
+  background-color: rgba($bgColor, .3);
+}
+
+#task {
+  margin: 0 auto;
+}
+
+.text{
+  padding-top: .9375rem;
+  font-size: 1.3rem;
+}
+#count{
+  padding-top: .625rem;
+}
